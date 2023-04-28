@@ -8,6 +8,13 @@ test('has title', async ({ page }) => {
 });
 
 test.describe('Initial Page Load', () => {
+  test('takes the user to a room id', async ({ page }) => {
+    await page.goto('/');
+
+    // url ends in numbers
+    expect(page.url()).toMatch(/\d+$/);
+  });
+
   test('renders form', async ({ page }) => {
     page.goto('https://quickaverage.com/automate');
 
@@ -74,8 +81,6 @@ test.describe('User list', () => {
     await firstPage.goto('/');
     const firstUrl = firstPage.url();
 
-    // url ends in numbers
-    expect(firstUrl).toMatch(/\d+$/);
     await secondPage.goto(firstUrl);
     await new Promise((r) => setTimeout(r, 150));
 
