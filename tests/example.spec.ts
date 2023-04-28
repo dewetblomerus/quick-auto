@@ -1,18 +1,35 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test("has title", async ({ page }) => {
+  await page.goto("https://quickaverage.com/automate");
 
   // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
+  await expect(page).toHaveTitle(/QuickAverage/);
 });
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test.describe("Input form", () => {
+  test("renders form", async ({ page }) => {
+    page.goto("https://quickaverage.com/automate");
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
+    await expect(page.getByLabel("Name")).toBeVisible();
+    await expect(page.getByLabel("Number")).toBeVisible();
+    await expect(page.getByLabel("Only Viewing")).toBeVisible();
+  });
 
-  // Expects the URL to contain intro.
-  await expect(page).toHaveURL(/.*intro/);
+  test("hides number input when only viewing", async ({ page }) => {
+    await page.goto("https://quickaverage.com/automate");
+
+    page.on("websocket", (ws) => {
+      // ws.on("framesent", (event) => console.log(JSON.parse(event.payload)));
+      expect(ws.isClosed()).toBeFalsy();
+    });
+
+    await new Promise((r) => setTimeout(r, 100));
+
+    await page.getByLabel("Only Viewing").check();
+
+    expect(await page.getByLabel("Only Viewing").isChecked()).toBeTruthy();
+
+    await expect(page.getByLabel("Number")).not.toBeVisible();
+  });
 });
