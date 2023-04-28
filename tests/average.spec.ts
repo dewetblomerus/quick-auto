@@ -16,7 +16,7 @@ test.describe('Initial Page Load', () => {
   });
 
   test('renders form', async ({ page }) => {
-    page.goto('https://quickaverage.com/automate');
+    page.goto('/automate');
 
     await expect(page.getByLabel('Name')).toBeVisible();
     await expect(page.getByLabel('Number')).toBeVisible();
@@ -79,9 +79,8 @@ test.describe('User list', () => {
     const secondPage = await secondContext.newPage();
 
     await firstPage.goto('/');
-    const firstUrl = firstPage.url();
 
-    await secondPage.goto(firstUrl);
+    await secondPage.goto(firstPage.url());
     await new Promise((r) => setTimeout(r, 150));
 
     await firstPage.getByLabel('Name').fill('Peter');
