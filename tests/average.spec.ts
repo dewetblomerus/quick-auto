@@ -16,7 +16,7 @@ test.describe('Initial Page Load', () => {
   });
 
   test('renders form', async ({ page }) => {
-    page.goto('/automate');
+    await page.goto('/automate');
 
     await expect(page.getByLabel('Name')).toBeVisible();
     await expect(page.getByLabel('Number')).toBeVisible();
