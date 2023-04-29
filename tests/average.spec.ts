@@ -92,6 +92,37 @@ test.describe('Admin buttons', () => {
     await new Promise((r) => setTimeout(r, 150));
     await expect(secondPage.getByLabel('Number')).toHaveValue('');
   });
+
+  test('Reveal button reveals the numbers', async ({ browser }) => {
+    // Create two isolated browser contexts
+    const firstContext = await browser.newContext();
+    const secondContext = await browser.newContext();
+
+    // Create pages and interact with contexts independently
+    const firstPage = await firstContext.newPage();
+    const secondPage = await secondContext.newPage();
+
+    await firstPage.goto('/');
+    const roomUrl = firstPage.url();
+
+    await secondPage.goto(roomUrl);
+
+    await new Promise((r) => setTimeout(r, 200));
+
+    await firstPage.getByLabel('Name').fill('Peter');
+
+    await secondPage.getByLabel('Name').fill('Suzie');
+    await secondPage.getByLabel('Number').fill('10');
+
+    await new Promise((r) => setTimeout(r, 200));
+
+    await expect(firstPage.getByText('Hidden')).toBeVisible();
+
+    await firstPage.getByRole('button', { name: 'Reveal' }).click();
+
+    await expect(firstPage.getByText('Hidden')).not.toBeVisible();
+    await expect(firstPage.getByText('10')).toHaveCount(2);
+  });
 });
 
 test.describe('User list', () => {
