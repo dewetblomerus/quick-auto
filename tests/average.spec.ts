@@ -52,11 +52,11 @@ test.describe('Admin buttons', () => {
     const secondPage = await secondContext.newPage();
 
     await firstPage.goto('/');
-    const firstUrl = firstPage.url();
+    const roomUrl = firstPage.url();
 
     // url ends in numbers
-    expect(firstUrl).toMatch(/\d+$/);
-    await secondPage.goto(firstUrl);
+    expect(roomUrl).toMatch(/\d+$/);
+    await secondPage.goto(roomUrl);
 
     await expect(
       firstPage.getByRole('button', { name: 'Clear Numbers' })
@@ -77,11 +77,11 @@ test.describe('Admin buttons', () => {
     const secondPage = await secondContext.newPage();
 
     await firstPage.goto('/');
-    const firstUrl = firstPage.url();
+    const roomUrl = firstPage.url();
 
     // url ends in numbers
-    expect(firstUrl).toMatch(/\d+$/);
-    await secondPage.goto(firstUrl);
+    expect(roomUrl).toMatch(/\d+$/);
+    await secondPage.goto(roomUrl);
 
     await secondPage.getByLabel('Name').fill('Suzie');
     await secondPage.getByLabel('Number').fill('10');
