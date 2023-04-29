@@ -39,7 +39,9 @@ test.describe('Initial Page Load', () => {
 
     await expect(page.getByLabel('Number')).not.toBeVisible();
   });
+});
 
+test.describe('Admin buttons', () => {
   test('only the first users sees admin buttons', async ({ browser }) => {
     // Create two isolated browser contexts
     const firstContext = await browser.newContext();
@@ -63,6 +65,32 @@ test.describe('Initial Page Load', () => {
     await expect(
       secondPage.getByRole('button', { name: 'Clear Numbers' })
     ).not.toBeVisible();
+  });
+
+  test('Clear Numbers button clears the numbers', async ({ browser }) => {
+    // Create two isolated browser contexts
+    const firstContext = await browser.newContext();
+    const secondContext = await browser.newContext();
+
+    // Create pages and interact with contexts independently
+    const firstPage = await firstContext.newPage();
+    const secondPage = await secondContext.newPage();
+
+    await firstPage.goto('/');
+    const firstUrl = firstPage.url();
+
+    // url ends in numbers
+    expect(firstUrl).toMatch(/\d+$/);
+    await secondPage.goto(firstUrl);
+
+    await secondPage.getByLabel('Name').fill('Suzie');
+    await secondPage.getByLabel('Number').fill('10');
+    await expect(secondPage.getByLabel('Number')).toHaveValue('10');
+
+    await firstPage.getByRole('button', { name: 'Clear Numbers' }).click();
+
+    await new Promise((r) => setTimeout(r, 150));
+    await expect(secondPage.getByLabel('Number')).toHaveValue('');
   });
 });
 
